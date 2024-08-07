@@ -1,24 +1,37 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Menu, Paw, Heart, Info } from "lucide-react";
+import { Menu, Paw, Heart, Info, ChevronDown } from "lucide-react";
+import { motion } from "framer-motion";
 
 const Index = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrollY, setScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gradient-to-b from-gray-100 to-indigo-50">
       {/* Navigation */}
-      <nav className="bg-white shadow-md">
+      <nav className={`fixed w-full z-10 transition-all duration-300 ${scrollY > 20 ? 'bg-white shadow-md' : 'bg-transparent'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
-            <div className="flex">
+            <motion.div 
+              className="flex"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
+            >
               <div className="flex-shrink-0 flex items-center">
-                <Paw className="h-8 w-8 text-indigo-600" />
-                <span className="ml-2 text-2xl font-bold text-gray-900">CatWorld</span>
+                <Paw className={`h-8 w-8 ${scrollY > 20 ? 'text-indigo-600' : 'text-white'}`} />
+                <span className={`ml-2 text-2xl font-bold ${scrollY > 20 ? 'text-gray-900' : 'text-white'}`}>CatWorld</span>
               </div>
-            </div>
+            </motion.div>
             <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
               <a href="#" className="border-indigo-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                 Home
@@ -49,104 +62,134 @@ const Index = () => {
       </nav>
 
       {/* Hero Section */}
-      <div className="relative bg-indigo-800 overflow-hidden">
-        <div className="max-w-7xl mx-auto">
-          <div className="relative z-10 pb-8 bg-indigo-800 sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-full lg:pb-28 xl:pb-32">
-            <main className="mt-10 mx-auto max-w-7xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28">
-              <div className="sm:text-center lg:text-left">
-                <h1 className="text-4xl tracking-tight font-extrabold text-white sm:text-5xl md:text-6xl">
-                  <span className="block xl:inline">All About</span>{' '}
-                  <span className="block text-indigo-300 xl:inline">Cats</span>
-                </h1>
-                <p className="mt-3 text-base text-indigo-200 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
-                  Discover the fascinating world of our feline friends. From their unique characteristics to popular breeds, dive into the realm of cats.
-                </p>
-                <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
-                  <div className="rounded-md shadow">
-                    <Button className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 md:py-4 md:text-lg md:px-10">
-                      Learn More
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </main>
-          </div>
-        </div>
-        <div className="lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2">
+      <div className="relative bg-indigo-800 overflow-hidden min-h-screen flex items-center">
+        <div className="absolute inset-0">
           <img
-            className="h-56 w-full object-cover sm:h-72 md:h-96 lg:w-full lg:h-full"
+            className="w-full h-full object-cover"
             src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80"
             alt="Cat hero"
           />
+          <div className="absolute inset-0 bg-indigo-800 opacity-75"></div>
         </div>
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-center"
+          >
+            <h1 className="text-4xl tracking-tight font-extrabold text-white sm:text-5xl md:text-6xl">
+              <span className="block xl:inline">All About</span>{' '}
+              <span className="block text-indigo-300 xl:inline">Cats</span>
+            </h1>
+            <p className="mt-3 text-base text-indigo-200 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl">
+              Discover the fascinating world of our feline friends. From their unique characteristics to popular breeds, dive into the realm of cats.
+            </p>
+            <div className="mt-5 sm:mt-8 sm:flex sm:justify-center">
+              <div className="rounded-md shadow">
+                <Button className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-indigo-600 bg-white hover:bg-indigo-50 md:py-4 md:text-lg md:px-10">
+                  Learn More
+                </Button>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.5 }}
+          className="absolute bottom-0 left-1/2 transform -translate-x-1/2 text-white"
+        >
+          <ChevronDown className="h-12 w-12 animate-bounce" />
+        </motion.div>
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <Card>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="grid grid-cols-1 md:grid-cols-2 gap-8"
+        >
+          <Card className="bg-white shadow-lg hover:shadow-xl transition-shadow duration-300">
             <CardHeader>
-              <CardTitle className="flex items-center">
-                <Heart className="h-6 w-6 text-red-500 mr-2" />
+              <CardTitle className="flex items-center text-2xl">
+                <Heart className="h-8 w-8 text-red-500 mr-3" />
                 Characteristics of Cats
               </CardTitle>
-              <CardDescription>What makes cats unique?</CardDescription>
+              <CardDescription className="text-lg">What makes cats unique?</CardDescription>
             </CardHeader>
             <CardContent>
-              <ul className="list-disc pl-6 space-y-2">
-                <li>Independent nature</li>
-                <li>Excellent hunters with sharp claws and teeth</li>
-                <li>Flexible bodies and quick reflexes</li>
-                <li>Keen senses, especially hearing and night vision</li>
-                <li>Communicate through vocalizations, body language, and scent</li>
+              <ul className="space-y-3">
+                {["Independent nature", "Excellent hunters with sharp claws and teeth", "Flexible bodies and quick reflexes", "Keen senses, especially hearing and night vision", "Communicate through vocalizations, body language, and scent"].map((item, index) => (
+                  <motion.li 
+                    key={index}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                    className="flex items-center"
+                  >
+                    <Paw className="h-5 w-5 text-indigo-500 mr-2" />
+                    {item}
+                  </motion.li>
+                ))}
               </ul>
             </CardContent>
           </Card>
           
-          <Card>
+          <Card className="bg-white shadow-lg hover:shadow-xl transition-shadow duration-300">
             <CardHeader>
-              <CardTitle className="flex items-center">
-                <Paw className="h-6 w-6 text-indigo-500 mr-2" />
+              <CardTitle className="flex items-center text-2xl">
+                <Paw className="h-8 w-8 text-indigo-500 mr-3" />
                 Popular Cat Breeds
               </CardTitle>
-              <CardDescription>Some well-known cat breeds around the world</CardDescription>
+              <CardDescription className="text-lg">Some well-known cat breeds around the world</CardDescription>
             </CardHeader>
             <CardContent>
-              <ul className="list-disc pl-6 space-y-2">
-                <li>Siamese</li>
-                <li>Persian</li>
-                <li>Maine Coon</li>
-                <li>Bengal</li>
-                <li>Scottish Fold</li>
+              <ul className="space-y-3">
+                {["Siamese", "Persian", "Maine Coon", "Bengal", "Scottish Fold"].map((breed, index) => (
+                  <motion.li 
+                    key={index}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                    className="flex items-center"
+                  >
+                    <Paw className="h-5 w-5 text-indigo-500 mr-2" />
+                    {breed}
+                  </motion.li>
+                ))}
               </ul>
             </CardContent>
           </Card>
-        </div>
+        </motion.div>
 
         {/* Cat Facts Accordion */}
-        <div className="mt-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">Interesting Cat Facts</h2>
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="mt-24"
+        >
+          <h2 className="text-4xl font-bold text-gray-900 mb-8 text-center">Fascinating Cat Facts</h2>
           <Accordion type="single" collapsible className="w-full">
-            <AccordionItem value="item-1">
-              <AccordionTrigger>Cats sleep for 70% of their lives</AccordionTrigger>
-              <AccordionContent>
-                On average, cats sleep for about 13 to 16 hours a day. This means they spend about 70% of their lives sleeping!
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="item-2">
-              <AccordionTrigger>Cats have a unique nose print</AccordionTrigger>
-              <AccordionContent>
-                Just like human fingerprints, each cat's nose print is unique. No two cats have the same nose print pattern.
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="item-3">
-              <AccordionTrigger>Cats can't taste sweetness</AccordionTrigger>
-              <AccordionContent>
-                Unlike humans, cats lack the specific taste receptor for sweetness. This is why they don't have a sweet tooth!
-              </AccordionContent>
-            </AccordionItem>
+            {[
+              { title: "Cats sleep for 70% of their lives", content: "On average, cats sleep for about 13 to 16 hours a day. This means they spend about 70% of their lives sleeping!" },
+              { title: "Cats have a unique nose print", content: "Just like human fingerprints, each cat's nose print is unique. No two cats have the same nose print pattern." },
+              { title: "Cats can't taste sweetness", content: "Unlike humans, cats lack the specific taste receptor for sweetness. This is why they don't have a sweet tooth!" },
+              { title: "A group of cats is called a 'clowder'", content: "While we often think of groups of animals like a pack of dogs or a flock of birds, a group of cats is called a 'clowder'." },
+              { title: "Cats have over 20 different vocalizations", content: "From meows to purrs, cats have a wide range of vocalizations. They have over 20 different sounds they use to communicate with humans and other cats." }
+            ].map((fact, index) => (
+              <AccordionItem value={`item-${index + 1}`} key={index}>
+                <AccordionTrigger className="text-lg font-semibold">{fact.title}</AccordionTrigger>
+                <AccordionContent className="text-gray-700">
+                  {fact.content}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
           </Accordion>
-        </div>
+        </motion.div>
       </div>
 
       {/* Footer */}
